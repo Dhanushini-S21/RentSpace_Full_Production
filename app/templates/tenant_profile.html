@@ -1,0 +1,53 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">TENANT / INFORMATION</div><h1>Personal & Rental Information</h1><p>Complete your saved rental requirements. Admin receives notifications when saved information is edited.</p></div><span class="anchor">TID {{profile.tid}}</span></div>
+<form class="panel professional-form" method="post" enctype="multipart/form-data">
+<section class="form-section"><div class="section-heading"><span>01</span><div><h2>Personal Information</h2><p>Identity and contact</p></div></div>
+<div class="form-grid three-col">
+<label>Name<input name="name" required value="{{user.name}}"></label>
+<label>Age<input name="age" type="number" min="18" max="100" value="{{profile.age or ''}}" required></label>
+<label>Native location / Previous location<input name="native_location" required value="{{profile.native_location or ''}}"></label>
+<label>Current location<input name="current_location" value="{{profile.current_location or ''}}"></label>
+<label>Mobile number<input name="mobile" type="tel" value="{{profile.mobile or ''}}"></label>
+<label>Email ID<input name="email_id" type="email" value="{{profile.email_id or ''}}"></label>
+<label>Aadhar card photo<input name="aadhaar_photo" type="file" accept=".pdf,.jpg,.jpeg,.docx"><small>PDF, JPG, JPEG, DOCX</small></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>02</span><div><h2>Rental Information</h2><p>Requirements used for property matching</p></div></div>
+<div class="form-grid three-col">
+<label>Purpose of relocation<select name="purpose" id="tenantPurpose">{% for v,l in [('education','Education'),('treatment','Treatment'),('job','Job'),('business','Business'),('others','Others')] %}<option value="{{v}}" {% if profile.purpose==v %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label id="tenantPurposeOther">Other purpose<input name="purpose_other" value="{{profile.purpose_other or ''}}" placeholder="Enter reason"></label>
+<label>Type of people<select name="people_type">{% for v in ['Bachelors','Family','Couple','Single man','Single woman'] %}<option value="{{v}}" {% if profile.people_type==v %}selected{% endif %}>{{v}}</option>{% endfor %}</select></label>
+<label class="wide">Number of people</label>
+<label>Min no. of people<input name="min_people" type="number" min="1" value="{{profile.min_people or ''}}"></label>
+<label>Max no. of people<input name="max_people" type="number" min="1" value="{{profile.max_people or ''}}"></label>
+<label>Type of property<select name="property_type">{% for v in ['1rk','1bhk','2bhk','3bhk','single room','sharing room'] %}<option value="{{v}}" {% if profile.needed_property_type==v %}selected{% endif %}>{{v|upper}}</option>{% endfor %}</select></label>
+<label class="wide">Rent range</label>
+<label>Min rent (₹)<input name="min_rent" type="number" min="0" value="{{profile.min_rent or ''}}"></label>
+<label>Max rent (₹)<input name="max_rent" type="number" min="0" value="{{profile.max_rent or ''}}"></label>
+<label class="wide">Advance range</label>
+<label>Min advance (₹)<input name="min_advance" type="number" min="0" value="{{profile.min_advance or ''}}"></label>
+<label>Max advance (₹)<input name="max_advance" type="number" min="0" value="{{profile.max_advance or ''}}"></label>
+<label class="wide">Rooms</label>
+<label>No. of bedrooms needed<input name="bedrooms_needed" type="number" min="0" value="{{profile.bedrooms_needed or ''}}"></label>
+<label>No. of hall needed<input name="halls_needed" type="number" min="0" value="{{profile.halls_needed or ''}}"></label>
+<label>No. of kitchen needed<input name="kitchens_needed" type="number" min="0" value="{{profile.kitchens_needed or ''}}"></label>
+<label>No. of bathroom needed<input name="bathrooms_needed" type="number" min="0" value="{{profile.bathrooms_needed or ''}}"></label>
+<label class="wide">Rental duration</label>
+<label>Min stay<input name="rental_min_duration" placeholder="Days / months / years" value="{{profile.rental_min_duration or ''}}"></label>
+<label>Max stay<input name="rental_max_duration" placeholder="Days / months / years" value="{{profile.rental_max_duration or ''}}"></label>
+<label class="wide">Parking needed</label>
+<label>2-wheeler<input name="two_wheeler_count" type="number" min="0" value="{{profile.two_wheeler_count or 0}}"></label>
+<label>4-wheeler<input name="four_wheeler_count" type="number" min="0" value="{{profile.four_wheeler_count or 0}}"></label>
+<label>Rental space needed in<select name="needed_type" id="tenantNeeded">{% for v,l in [('immediate','Immediately'),('within_week','Within a week'),('within_month','Within a month'),('specific_date','After specific date')] %}<option value="{{v}}" {% if profile.needed_type==v %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label id="tenantNeededDate">Specific needed date<input name="needed_date" type="date" value="{{profile.needed_date or ''}}"></label>
+<label>Preferred locations<input name="preferred_locations" value="{{profile.preferred_locations or ''}}"></label>
+<label>Preferred landmarks<input name="preferred_landmarks" value="{{profile.preferred_landmarks or ''}}"></label>
+<label>Free hours everyday — From<input name="free_hours_from" type="time" value="{{profile.free_hours_from or ''}}"></label>
+<label>Free hours everyday — To<input name="free_hours_to" type="time" value="{{profile.free_hours_to or ''}}"></label>
+<label class="wide">Other preferences / conditions<textarea name="other_preferences" rows="3">{{profile.other_preferences or ''}}</textarea></label>
+</div></section>
+<div class="form-actions"><span>TID: <strong>{{profile.tid}}</strong></span><button class="primary">Save Personal & Rental Information →</button></div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{const p=document.getElementById('tenantPurpose'),o=document.getElementById('tenantPurposeOther'),n=document.getElementById('tenantNeeded'),d=document.getElementById('tenantNeededDate');const sync=()=>{o.style.display=p.value==='others'?'grid':'none';d.style.display=n.value==='specific_date'?'grid':'none'};p.onchange=sync;n.onchange=sync;sync();});
+</script>
+{% endblock %}

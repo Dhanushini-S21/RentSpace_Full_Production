@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% block body %}
+<div class="login-page">
+<section class="login-hero">
+<div class="hero-brand"><span class="brandmark">R</span><span>RentSpace</span></div>
+<div class="hero-copy"><p class="eyebrow">PROPERTY INTELLIGENCE</p><h1>One workspace for your rental ecosystem.</h1>
+<p>Role-based property discovery, owner operations, tenant matching and real-time activity — connected in one focused platform.</p>
+<div class="hero-metrics"><div><b>100%</b><span>CONNECTED FLOW</span></div><div><b>3</b><span>ROLE PERSPECTIVES</span></div><div><b>24/7</b><span>DATA READY</span></div></div></div>
+<div class="hero-foot">Secure role-based access · Production-ready architecture</div>
+</section>
+<section class="login-panel">
+<div class="login-card">
+<p class="eyebrow">WELCOME BACK</p><h2>Sign in to RentSpace</h2><p class="muted">Choose role perspective and continue to workspace.</p>
+<div class="roles">
+{% for r,label in [("admin","Admin"),("owner","Owner"),("tenant","Tenant")] %}
+<a class="role-card {% if selected_role==r %}active{% endif %}" href="{{url_for('auth.login',role=r)}}"><span>{{r[:1].upper()}}{{r[1:]}}</span><small>{{label}}</small></a>
+{% endfor %}
+</div>
+<form method="post">
+<label>Email address<input name="email" type="email" required value="{{request.form.get('email','')}}"></label>
+<label>Password<input name="password" type="password" required></label>
+<div class="demo">● Active demo credentials <b>{{selected_role}}@rentspace.local</b></div>
+<button class="primary">Continue to workspace <span>→</span></button>
+</form>
+<div class="credentials"><b>Demo credentials</b>
+<div>ADMIN · admin@rentspace.local · Admin@12345</div>
+<div>OWNER · owner@rentspace.local · Owner@12345</div>
+<div>TENANT · tenant@rentspace.local · Tenant@12345</div></div>
+</div></section></div>
+{% endblock %}

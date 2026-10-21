@@ -1,0 +1,31 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">OWNER / RENTAL INFORMATION</div><h1>Create Rental Property</h1><p>Structured rental information for admin approval and tenant search.</p></div></div>
+<form class="form-panel" method="post">
+<div class="section-title">Rental information</div><div class="form-grid">
+<label>Property title<input name="title" required placeholder="Modern 2 BHK near Katpadi"></label>
+<label>Type of property<select name="property_type" required><option value="1bhk">1 BHK</option><option value="2bhk">2 BHK</option><option value="3bhk">3 BHK</option><option value="single_room">Single Room</option><option value="single_bed">Single Bed</option></select></label>
+<label>Rental house location<input name="location" required></label><label>Rent<input name="rent" type="number" min="0" required></label>
+<label>Advance payment<input name="advance" type="number" min="0" required></label><label>Currently available<select name="currently_available"><option value="yes">Yes</option><option value="no">No</option></select></label>
+</div>
+<div class="section-title">Furnished and utility information</div><div class="form-grid">
+<label>Furnished status<select name="furnished_status"><option>N/A</option><option>Items</option><option>Fully Furnished</option><option>Semi Furnished</option></select></label>
+<label>Furnished items<input name="furnished_items" placeholder="Cot, fan, lights, cupboard..."></label>
+<label>Electricity<select name="electricity_type"><option value="separate">Separate</option><option value="shared">Shared / Joined</option></select></label>
+<label>Drinking water connection<select name="drinking_water_connection"><option value="yes">Yes</option><option value="no">No</option></select></label>
+<label>Salt water available?<select name="salt_water_available"><option value="yes">Yes</option><option value="no">No</option></select></label>
+<label>Water type<input name="water_type" value="Drinking water"></label><label>Water frequency<input name="water_frequency" placeholder="Daily / Alternate days"></label>
+</div>
+<div class="section-title">Room information</div><div class="form-grid">
+<label>Bedroom<input name="bedroom_count" type="number" min="0"></label><label>Hall<input name="hall_count" type="number" min="0"></label>
+<label>Kitchen<input name="kitchen_count" type="number" min="0"></label><label>Pooja room<input name="pooja_room_count" type="number" min="0"></label>
+<label>Total rooms<input name="rooms" type="number" min="0"></label><label>No. of bathrooms<input name="bathrooms" type="number" min="0"></label>
+<label>People allowed — min<input name="min_people" type="number" min="1"></label><label>People allowed — max<input name="max_people" type="number" min="1"></label>
+</div>
+<div class="section-title">Additional property information</div><div class="form-grid">
+<label>Parking<input name="parking" placeholder="Two wheeler / Four wheeler"></label><label>House area (sq ft)<input name="area_sqft" type="number" min="0"></label>
+<label>House age (years)<input name="age_years" type="number" min="0"></label><label>House facing<input name="facing" placeholder="East"></label>
+<label>Available days<input name="available_days" placeholder="Mon-Sun"></label><label>Available time<input name="available_time" placeholder="9 AM - 7 PM"></label>
+<label>Rental duration min (months)<input name="rental_min_months" type="number" min="1"></label><label>Rental duration max (months)<input name="rental_max_months" type="number" min="1"></label>
+<label>Nearby / closest landmark<input name="landmarks"></label><label class="wide">Other conditions<textarea name="conditions"></textarea></label>
+</div><button class="primary wide">Submit rental information →</button></form>
+{% endblock %}

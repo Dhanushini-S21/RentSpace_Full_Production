@@ -1,0 +1,92 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead compact-head">
+  <div><div class="crumb">{{ role|upper }} / PROFILE</div>
+  <h1>{% if role == "owner" %}Owner Landing Page{% else %}Tenant Landing Page{% endif %}</h1>
+  <p>{% if admin_edit %}Admin editing user record{% else %}All required information in one professional page.{% endif %}</p></div>
+  <span class="anchor">ONE PAGE</span>
+</div>
+<form class="form-panel professional-form" method="post" action="{{ form_action or '' }}" {% if role == 'tenant' %}enctype="multipart/form-data"{% endif %}>
+<section class="form-section">
+<div class="section-heading"><span>01</span><div><h2>Personal Information</h2><p>Identity and contact details</p></div></div>
+<div class="form-grid three-col">
+<label>Name<input name="name" value="{{ (display_user or current_user).name }}" required></label>
+<label>Age<input name="age" type="number" min="18" max="100" value="{{ profile.age if profile else '' }}" required></label>
+{% if role == 'owner' %}
+<label>Own location<input name="own_location" value="{{ profile.own_location if profile else '' }}" required></label>
+<label>Current location<input name="current_location" value="{{ profile.current_location if profile else '' }}" required></label>
+<label>Mobile number<input name="phone" type="tel" value="{{ profile.phone if profile else '' }}" required></label>
+<label>Aadhar card number<input name="aadhaar_number" inputmode="numeric" minlength="12" maxlength="12" pattern="[0-9]{12}" value="{{ decrypt_sensitive(profile.aadhaar_number) if profile and profile.aadhaar_number else '' }}" required></label>
+{% else %}
+<label>Native / previous location<input name="native_location" value="{{ profile.native_location if profile else '' }}" required></label>
+<label>Current location<input name="current_location" value="{{ profile.current_location if profile else '' }}"></label>
+<label>Mobile number<input name="mobile" type="tel" value="{{ profile.mobile if profile else '' }}" required></label>
+<label>Aadhar card photo<input name="aadhaar_photo" type="file" accept="image/jpeg,image/png,image/webp">{% if profile and profile.aadhaar_photo_path %}<small class="muted">Existing photo stored securely. Upload new photo only if replacing.</small>{% endif %}</label>
+{% endif %}
+</div></section>
+
+{% if role == 'owner' %}
+<section class="form-section"><div class="section-heading"><span>02</span><div><h2>Rental Information</h2><p>Property, rent and occupancy details</p></div></div>
+<div class="form-grid three-col">
+<label>Rental house location<input name="location" value="{{ property.location if property else '' }}" required></label>
+<label>Type of property<select name="property_type" required>{% for v,l in [('1rk','1 RK'),('1bhk','1 BHK'),('2bhk','2 BHK'),('3bhk','3 BHK'),('single_room','Single Room'),('single_bed','Single Bed')] %}<option value="{{v}}" {% if property and property.property_type==v %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label>Rent (₹)<input name="rent" type="number" min="0" value="{{ property.rent if property else '' }}" required></label>
+<label>Advance (₹)<input name="advance" type="number" min="0" value="{{ property.advance if property else '' }}" required></label>
+<label>Furnished items<select name="furnished_status"><option value="no_available" {% if property and property.furnished_status=='no_available' %}selected{% endif %}>No available</option><option value="mention_items" {% if property and property.furnished_status=='mention_items' %}selected{% endif %}>Mention items</option></select></label>
+<label>Items / type<input name="furnished_items" value="{{ property.furnished_items if property else '' }}" placeholder="Bed, cot, fan, cupboard"></label>
+<label>Electricity<select name="electricity_type"><option value="separate" {% if property and property.electricity_type=='separate' %}selected{% endif %}>Separate</option><option value="joined" {% if property and property.electricity_type=='joined' %}selected{% endif %}>Joined</option></select></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>03</span><div><h2>Rooms, People & Parking</h2><p>Exact capacity and room configuration</p></div></div>
+<div class="form-grid three-col">
+<label>Bedrooms<input name="bedroom_count" type="number" min="0" value="{{ property.bedroom_count if property else 0 }}"></label>
+<label>Hall<input name="hall_count" type="number" min="0" value="{{ property.hall_count if property else 0 }}"></label>
+<label>Kitchen<input name="kitchen_count" type="number" min="0" value="{{ property.kitchen_count if property else 0 }}"></label>
+<label>Pooja room<input name="pooja_room_count" type="number" min="0" value="{{ property.pooja_room_count if property else 0 }}"></label>
+<label>No. of bathrooms<input name="bathrooms" type="number" min="0" value="{{ property.bathrooms if property else 0 }}"></label>
+<label>Allowed people type<select name="allowed_people_types" multiple size="5">{% for v,l in [('bachelors','Bachelors (2 or more)'),('family','Family'),('single_men','Single men'),('single_women','Single women'),('couple','Couple')] %}<option value="{{v}}" {% if property and v in (property.allowed_people_types or '').split(',') %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label>People allowed — minimum<input name="min_people" type="number" min="1" value="{{ property.min_people if property else 1 }}"></label>
+<label>People allowed — maximum<input name="max_people" type="number" min="1" value="{{ property.max_people if property else 1 }}"></label>
+<label>2-wheeler parking<input name="two_wheeler_count" type="number" min="0" value="{{ property.two_wheeler_count if property else 0 }}"></label>
+<label>4-wheeler parking<input name="four_wheeler_count" type="number" min="0" value="{{ property.four_wheeler_count if property else 0 }}"></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>04</span><div><h2>Property & Availability</h2><p>Optional property details and rental period</p></div></div>
+<div class="form-grid three-col">
+<label>House area size (sq ft) — optional<input name="area_sqft" type="number" min="0" value="{{ property.area_sqft if property else '' }}"></label>
+<label>House constructed year<input name="construction_year" type="number" min="1900" max="2100" value="{{ property.construction_year if property else '' }}"></label>
+<label>House facing direction<select name="facing"><option value="">Select</option>{% for v in ['North','North-East','East','South-East','South','South-West','West','North-West'] %}<option {% if property and property.facing==v %}selected{% endif %}>{{v}}</option>{% endfor %}</select></label>
+<label>Available<select name="availability_type"><option value="immediate">Immediate</option><option value="within_week">Within a week</option><option value="specific_date">Specific date</option><option value="within_month">Within a month</option></select></label>
+<label>Specific available date<input name="availability_date" type="date" value="{{ property.availability_date if property and property.availability_date else '' }}"></label>
+<label>Nearby landmarks<input name="landmarks" value="{{ property.landmarks if property else '' }}" placeholder="Type closest landmarks"></label>
+<label>Rental duration — minimum days<input name="rental_min_days" type="number" min="1" value="{{ property.rental_min_days if property else '' }}"></label>
+<label>Rental duration — maximum days<input name="rental_max_days" type="number" min="1" value="{{ property.rental_max_days if property else '' }}"></label>
+<label class="wide">Other conditions<textarea name="conditions" rows="3" placeholder="Type any other condition...">{{ property.conditions if property else '' }}</textarea></label>
+</div></section>
+{% else %}
+<section class="form-section"><div class="section-heading"><span>02</span><div><h2>Rental Information</h2><p>Relocation reason, people and property requirement</p></div></div>
+<div class="form-grid three-col">
+<label>Purpose of relocation<select name="purpose"><option value="job">Job</option><option value="treatment">Treatment</option><option value="education">Education</option><option value="transfer">Transfer</option><option value="others">Others</option></select></label>
+<label>Other purpose<input name="purpose_other" value="{{ profile.purpose_other if profile else '' }}" placeholder="Mention purpose"></label>
+<label>Type of people<select name="people_type"><option value="bachelors">Bachelors (group of boys/girls)</option><option value="family">Family</option><option value="couple">Couple</option><option value="single_man">Single man</option><option value="single_woman">Single woman</option></select></label>
+<label>People — minimum<input name="min_people" type="number" min="1" value="{{ profile.min_people if profile else 1 }}"></label>
+<label>People — maximum<input name="max_people" type="number" min="1" value="{{ profile.max_people if profile else 1 }}"></label>
+<label>Type of property<select name="property_type"><option value="1rk">1 RK</option><option value="1bhk">1 BHK</option><option value="2bhk">2 BHK</option><option value="3bhk">3 BHK</option><option value="single_room">Single Room</option><option value="sharing_room">Sharing Room</option></select></label>
+<label>Rent range — minimum (₹)<input name="min_rent" type="number" min="0" value="{{ profile.min_rent if profile else '' }}"></label>
+<label>Rent range — maximum (₹)<input name="max_rent" type="number" min="0" value="{{ profile.max_rent if profile else '' }}"></label>
+<label>Advance range — minimum (₹)<input name="min_advance" type="number" min="0" value="{{ profile.min_advance if profile else '' }}"></label>
+<label>Advance range — maximum (₹)<input name="max_advance" type="number" min="0" value="{{ profile.max_advance if profile else '' }}"></label>
+<label>No. of rooms needed<input name="rooms_needed" type="number" min="1" value="{{ profile.rooms_needed if profile else '' }}"></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>03</span><div><h2>Stay, Parking & Availability</h2><p>Move timing and practical requirements</p></div></div>
+<div class="form-grid three-col">
+<label>Rental duration — minimum stay (days)<input name="rental_min_days" type="number" min="1" value="{{ profile.rental_min_days if profile else '' }}"></label>
+<label>Rental duration — maximum stay (days)<input name="rental_max_days" type="number" min="1" value="{{ profile.rental_max_days if profile else '' }}"></label>
+<label>2-wheeler parking needed<input name="two_wheeler_count" type="number" min="0" value="{{ profile.two_wheeler_count if profile else 0 }}"></label>
+<label>4-wheeler parking needed<input name="four_wheeler_count" type="number" min="0" value="{{ profile.four_wheeler_count if profile else 0 }}"></label>
+<label>Needed<select name="needed_type"><option value="immediate">Immediately</option><option value="within_week">Within a week</option><option value="specific_date">Specific date</option><option value="within_month">Within a month</option></select></label>
+<label>Specific needed date<input name="needed_date" type="date" value="{{ profile.needed_date if profile and profile.needed_date else '' }}"></label>
+<label>Preferred location<input name="preferred_locations" value="{{ profile.preferred_locations if profile else '' }}"></label>
+<label>Preferred landmarks<input name="preferred_landmarks" value="{{ profile.preferred_landmarks if profile else '' }}" placeholder="Type closer landmarks needed"></label>
+<label class="wide">Other preferences<textarea name="other_preferences" rows="3" placeholder="Type any other requirement or condition...">{{ profile.other_preferences if profile else '' }}</textarea></label>
+</div></section>
+{% endif %}
+<div class="form-actions"><button type="submit" class="approve">Save information →</button></div>
+</form>{% endblock %}

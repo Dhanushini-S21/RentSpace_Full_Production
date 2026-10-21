@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">ADMIN / DASHBOARD</div><h1>Admin Dashboard</h1><p>Operational overview. Management data lives on Managements page.</p></div><span class="anchor">CONTROL CENTER</span></div>
+<section class="kpis admin-kpis">
+{% for key,label in [('active_tenants','Active tenants'),('inactive_tenants','Inactive tenants'),('active_house_owners','Active house owners'),('inactive_house_owners','Inactive house owners'),('properties','Properties'),('tenants','Tenants'),('open_issues','Open issues')] %}
+<div class="kpi"><small>{{label|upper}}</small><strong>{{stats[key]}}</strong><span>Live database value</span></div>
+{% endfor %}
+</section>
+
+{% endblock %}

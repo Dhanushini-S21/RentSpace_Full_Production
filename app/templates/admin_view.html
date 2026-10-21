@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">ADMIN / VIEW RECORD</div><h1>{{role|capitalize}} details</h1><p>{{user.name}} · {{user.email}}</p></div><span class="anchor">READ ONLY</span></div>
+<section class="panel"><div class="panelhead"><h2>Account</h2><span>{{'Active' if user.active else 'Inactive'}}</span></div><div class="detail-grid"><div><small>Name</small><b>{{user.name}}</b></div><div><small>Email</small><b>{{user.email}}</b></div><div><small>Role</small><b>{{role|capitalize}}</b></div><div><small>Account status</small><b>{{'Active' if user.active else 'Inactive'}}</b></div></div></section>
+<section class="panel"><div class="panelhead"><h2>Personal information</h2></div><div class="detail-grid">{% for label,value in profile_fields %}<div><small>{{label}}</small><b>{{value}}</b></div>{% endfor %}</div></section>
+{% if property_fields %}<section class="panel"><div class="panelhead"><h2>Rental property information</h2></div><div class="detail-grid">{% for label,value in property_fields %}<div><small>{{label}}</small><b>{{value}}</b></div>{% endfor %}</div></section>{% endif %}
+<div class="form-actions"><a class="edit-btn" href="{{url_for('main.admin_managements')}}">Back to Managements</a><a class="edit-btn" href="{{url_for('main.admin_edit',role=role,uid=user.id)}}">Edit record</a></div>{% endblock %}

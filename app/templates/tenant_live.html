@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">TENANT / LIVE ACTIVITY</div><h1>Live Activity</h1><p>Admin-updated matching and visit information.</p></div><span class="anchor">TID {{profile.tid}}</span></div>
+<section class="panel"><div class="kpis">
+<div class="kpi"><small>MATCHED RENTAL SPACES</small><strong>{{profile.matched_rental_spaces}}</strong><span>Admin-updated</span></div>
+<div class="kpi"><small>SCHEDULED VISITS</small><strong>{{profile.scheduled_visits}}</strong><span>Admin-updated</span></div>
+<div class="kpi"><small>ALLOCATED PROPERTY</small><strong>{{allocated.hid if allocated else 'Not allocated'}}</strong><span>Admin-updated</span></div>
+<div class="kpi"><small>CONFIRMED PROPERTY</small><strong>{{confirmed.hid if confirmed else 'Not confirmed'}}</strong><span>Admin-updated</span></div>
+</div>
+<div class="live-detail"><b>Current scheduled visit</b><span>{{profile.current_scheduled_visit.strftime('%d %b %Y, %I:%M %p') if profile.current_scheduled_visit else 'Not scheduled'}}</span></div>
+</section>
+<section class="panel"><div class="panelhead"><h2>My Details</h2><a class="edit-btn" href="{{url_for('main.tenant_profile')}}">Edit My Details</a></div>
+<div class="detail-grid">
+<div><small>Name</small><b>{{user.name}}</b></div><div><small>Email</small><b>{{profile.email_id or '-'}}</b></div>
+<div><small>Mobile</small><b>{{profile.mobile or '-'}}</b></div><div><small>Purpose</small><b>{{profile.purpose or '-'}}</b></div>
+<div><small>Property</small><b>{{profile.needed_property_type or '-'}}</b></div><div><small>Rent</small><b>₹{{profile.min_rent or 0}} - ₹{{profile.max_rent or 0}}</b></div>
+<div><small>People</small><b>{{profile.min_people or 0}} - {{profile.max_people or 0}}</b></div><div><small>Preferred locations</small><b>{{profile.preferred_locations or '-'}}</b></div>
+<div class="wide"><small>Other preferences</small><b>{{profile.other_preferences or '-'}}</b></div>
+</div></section>
+{% if allocated %}<section class="panel"><div class="panelhead"><h2>Allocated Property</h2><span>{{allocated.hid}}</span></div><p><b>{{allocated.location}}</b> · {{allocated.property_type|upper}} · ₹{{allocated.rent}} rent · ₹{{allocated.advance}} advance</p></section>{% endif %}
+{% if confirmed %}<section class="panel"><div class="panelhead"><h2>Confirmed Property</h2><span>{{confirmed.hid}}</span></div><p><b>{{confirmed.location}}</b> · {{confirmed.property_type|upper}} · ₹{{confirmed.rent}} rent</p>
+<form method="post" action="{{url_for('main.tenant_feedback',pid=confirmed.id)}}"><label>Feedback about property / house owner<textarea name="feedback" rows="3">{{profile.tenant_feedback or ''}}</textarea></label><button class="primary">Submit Feedback</button></form></section>{% endif %}
+{% endblock %}

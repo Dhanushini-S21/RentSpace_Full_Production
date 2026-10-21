@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">ADMIN / NOTIFICATIONS</div><h1>Notifications</h1><p>New activity first. Read activity remains in history.</p></div><span class="anchor">{{unread|length}} NEW</span></div>
+<section class="panel"><div class="panelhead"><h2>New notifications</h2><span>Unread</span></div>
+{% for n in unread %}<div class="notification-item"><div><b>{{n.message}}</b><small>{{n.created_at.strftime('%d %b %Y, %I:%M %p')}}</small></div><form method="post" action="{{url_for('main.mark_notification_read',nid=n.id)}}"><button class="small-btn">Mark as read</button></form></div>{% else %}<p class="empty">No new notifications.</p>{% endfor %}</section>
+<section class="panel"><div class="panelhead"><h2>Notification history</h2><span>Read notifications</span></div>
+{% for n in history %}<div class="history-item"><b>{{n.created_at.strftime('%d %b %Y, %I:%M %p')}}</b> — {{n.message}}</div>{% else %}<p class="empty">No read notifications yet.</p>{% endfor %}</section>
+{% endblock %}

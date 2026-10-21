@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">ADMIN / LIVE ACTIVITY</div><h1>Live Activity</h1><p>Values shown here reflect the latest values saved in Managements.</p></div><span class="anchor">ADMIN CONTROLLED</span></div>
+<section class="panel"><div class="panelhead"><h2>House Owner Live Activity</h2><span>Read-only live status</span></div>
+<div class="table-wrap"><table class="admin-table live-table"><thead><tr><th>HID / Owner</th><th>Live Status</th></tr></thead><tbody>
+{% for o in owners %}{% set p=o.user.properties|sort(attribute='id')|last %}<tr><td><b>{{p.hid if p else '-'}}</b><br>{{o.user.name}}</td><td><div class="live-status-list">
+{% for label,value in [('Matched tenants',o.matched_tenants),('Scheduled visits',o.scheduled_visits),('Times visited',o.times_visited),('Feedback',o.tenant_feedback),('Current scheduled visit',o.current_scheduled_visit.strftime('%d %b %Y, %I:%M %p') if o.current_scheduled_visit else 'Not scheduled'),('Verified','Yes' if o.verified else 'No'),('Booked','Yes' if o.booked else 'No'),('Issues',o.issues),('Enquiry',o.enquiry)] %}
+<div class="live-status-row"><strong>{{label}}</strong><span>{{value if value not in [None,''] else '—'}}</span></div>
+{% endfor %}</div></td></tr>{% else %}<tr><td colspan="2" class="empty">No owners.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<section class="panel"><div class="panelhead"><h2>Tenant Live Activity</h2><span>Read-only live status</span></div>
+<div class="table-wrap"><table class="admin-table live-table"><thead><tr><th>TID / Tenant</th><th>Live Status</th></tr></thead><tbody>
+{% for t in tenants %}<tr><td><b>{{t.tid or '-'}}</b><br>{{t.user.name}}</td><td><div class="live-status-list">
+{% set ap=all_properties|selectattr('id','equalto',t.allocated_property_id)|first %}{% set cp=all_properties|selectattr('id','equalto',t.confirmed_property_id)|first %}
+{% for label,value in [('Matched rental spaces',t.matched_rental_spaces),('Scheduled visits',t.scheduled_visits),('Allocated property',(ap.hid ~ ' — ' ~ ap.location) if ap else 'None'),('Confirmed property',(cp.hid ~ ' — ' ~ cp.location) if cp else 'None'),('Current scheduled visit',t.current_scheduled_visit.strftime('%d %b %Y, %I:%M %p') if t.current_scheduled_visit else 'Not scheduled'),('Admin feedback',t.admin_feedback),('Verified','Yes' if t.verified else 'No'),('Issues',t.issues),('Enquiry',t.enquiry)] %}
+<div class="live-status-row"><strong>{{label}}</strong><span>{{value if value not in [None,''] else '—'}}</span></div>
+{% endfor %}</div></td></tr>{% else %}<tr><td colspan="2" class="empty">No tenants.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

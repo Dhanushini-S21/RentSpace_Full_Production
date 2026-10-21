@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RentSpace | {{ title or "Property Intelligence" }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+{% if current_user %}
+<header class="topbar"><div class="brand"><span class="brandmark">R</span><span>RentSpace</span></div>
+<div class="topmeta"><span>{{ current_user.name }}</span><span class="role">{{ current_user.role|upper }}</span>
+<form method="post" action="{{url_for('auth.logout')}}"><button class="ghost">Logout</button></form></div></header>
+<div class="shell"><aside class="sidebar"><div class="profile"><small>ACTIVE PERSONA</small><strong>{{current_user.role|upper}}</strong><span>Role-based production workspace</span></div>
+<nav>
+{% if current_user.role=='admin' %}
+<a href="{{url_for('main.admin_dashboard')}}">Dashboard</a>
+<a href="{{url_for('main.admin_managements')}}">Managements</a>
+<a href="{{url_for('main.admin_live')}}">Live Activity</a>
+<a href="{{url_for('main.admin_notifications')}}">Notifications{% if unread_notification_count %} ({{unread_notification_count}}){% endif %}</a>
+{% elif current_user.role=='owner' %}
+<a href="{{url_for('main.owner_profile')}}">Owner & Rental Information</a>
+<a href="{{url_for('main.owner_live')}}">Live Activity</a>
+{% else %}
+<a href="{{url_for('main.tenant_profile')}}">Personal & Rental Information</a>
+<a href="{{url_for('main.tenant_live')}}">Live Activity</a>
+{% endif %}
+</nav><div class="sidefoot">Secure role-based access<br>Continuous backend flow</div></aside>
+<main class="content">
+{% else %}<main class="content full">
+{% endif %}
+{% with messages=get_flashed_messages(with_categories=true) %}{% for category,msg in messages %}<div class="flash {{category}}">{{msg}}</div>{% endfor %}{% endwith %}
+{% block body %}{% endblock %}
+</main>{% if current_user %}</div>{% endif %}
+<script src="{{url_for('static',filename='app.js')}}"></script></body></html>

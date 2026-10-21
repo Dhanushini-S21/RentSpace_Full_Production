@@ -1,0 +1,59 @@
+{% extends "base.html" %}{% block body %}
+<div class="pagehead"><div><div class="crumb">HOUSE OWNER / INFORMATION</div><h1>Owner & Rental Information</h1><p>Complete property information. This page stores owner-entered data.</p></div><span class="anchor">HID {{property.hid}}</span></div>
+<form class="panel professional-form" method="post" enctype="multipart/form-data">
+<section class="form-section"><div class="section-heading"><span>01</span><div><h2>Personal Information</h2><p>Owner identity and contact</p></div></div>
+<div class="form-grid three-col">
+<label>Name<input name="name" required value="{{user.name}}"></label>
+<label>Age<input name="age" type="number" min="18" max="100" value="{{profile.age or ''}}" required></label>
+<label>Own location / Current location<input name="own_location" required value="{{profile.own_location or ''}}"></label>
+<label>Mobile number<input name="phone" type="tel" required value="{{profile.phone or ''}}"></label>
+<label>Email ID<input name="email_id" type="email" value="{{profile.email_id or ''}}"></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>02</span><div><h2>Rental Information</h2><p>Property, pricing, utilities and occupancy</p></div></div>
+<div class="form-grid three-col">
+<label>Rental house location<input name="location" required value="{{property.location or ''}}"></label>
+<label>Type of property<select name="property_type">{% for v,l in [('1rk','1 RK'),('1bhk','1 BHK'),('2bhk','2 BHK'),('3bhk','3 BHK'),('single_room','Single room'),('single_bed','Single bed')] %}<option value="{{v}}" {% if property.property_type==v %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label>Rent (₹)<input name="rent" type="number" min="0" required value="{{property.rent or ''}}"></label>
+<label>Advance (₹)<input name="advance" type="number" min="0" required value="{{property.advance or ''}}"></label>
+<label>Furnished items<select name="furnished_status" id="ownerFurnished"><option value="not_available" {% if property.furnished_status=='not_available' %}selected{% endif %}>Not available</option><option value="mention_items" {% if property.furnished_status=='mention_items' %}selected{% endif %}>Mention items</option></select></label>
+<label id="ownerFurnishedItems">Items<input name="furnished_items" value="{{property.furnished_items or ''}}" placeholder="Type items"></label>
+<label>Electricity<select name="electricity_type"><option value="separate" {% if property.electricity_type=='separate' %}selected{% endif %}>Separate</option><option value="joined" {% if property.electricity_type=='joined' %}selected{% endif %}>Joined</option></select></label>
+<label>Borewell water<select name="borewell_water"><option value="available" {% if property.borewell_water=='available' %}selected{% endif %}>Available</option><option value="not_available" {% if property.borewell_water!='available' %}selected{% endif %}>Not available</option></select></label>
+<label>Drinking water<select name="drinking_water"><option value="available" {% if property.drinking_water=='available' %}selected{% endif %}>Available</option><option value="not_available" {% if property.drinking_water!='available' %}selected{% endif %}>Not available</option></select></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>03</span><div><h2>Rooms, People & Parking</h2><p>Capacity and room configuration</p></div></div>
+<div class="form-grid three-col">
+<label>Number of bedrooms<input name="bedroom_count" type="number" min="0" value="{{property.bedroom_count or 0}}"></label>
+<label>Number of hall<input name="hall_count" type="number" min="0" value="{{property.hall_count or 0}}"></label>
+<label>Number of kitchen<input name="kitchen_count" type="number" min="0" value="{{property.kitchen_count or 0}}"></label>
+<label>Number of pooja room<input name="pooja_room_count" type="number" min="0" value="{{property.pooja_room_count or 0}}"></label>
+<label>No. of bathrooms<input name="bathrooms" type="number" min="0" value="{{property.bathrooms or 0}}"></label>
+<label class="wide">People allowed<select name="allowed_people_types" multiple size="5">{% for v,l in [('Bachelors','Bachelors (2 or more)'),('Family','Family'),('Single men','Single men'),('Single women','Single women'),('Couple','Couple')] %}<option value="{{v}}" {% if v in (property.allowed_people_types or '').split(',') %}selected{% endif %}>{{l}}</option>{% endfor %}</select><small>Hold Ctrl to select multiple.</small></label>
+<label class="wide">Number of people allowed</label>
+<label>Min<input name="min_people" type="number" min="0" value="{{property.min_people or ''}}"></label>
+<label>Max<input name="max_people" type="number" min="0" value="{{property.max_people or ''}}"></label>
+<label class="wide">Parking available</label>
+<label>2-wheeler<input name="two_wheeler_count" type="number" min="0" placeholder="Number of vehicles" value="{{property.two_wheeler_count or 0}}"></label>
+<label>4-wheeler<input name="four_wheeler_count" type="number" min="0" placeholder="Number of vehicles" value="{{property.four_wheeler_count or 0}}"></label>
+</div></section>
+<section class="form-section"><div class="section-heading"><span>04</span><div><h2>Property Availability</h2><p>Construction, facing, availability and rental period</p></div></div>
+<div class="form-grid three-col">
+<label>House area size<input name="area_sqft" type="number" min="0" value="{{property.area_sqft or ''}}"></label>
+<label>Rental house constructed year<input name="construction_year" type="number" min="1800" max="2100" value="{{property.construction_year or ''}}"></label>
+<label>Rental house facing direction<select name="facing">{% for v in ['North','North-East','East','South-East','South','South-West','West','North-West'] %}<option value="{{v}}" {% if property.facing==v %}selected{% endif %}>{{v}}</option>{% endfor %}</select></label>
+<label>Available for occupy now<select name="availability_type" id="ownerAvailability">{% for v,l in [('immediate','Immediate'),('within_week','Within a week'),('within_month','Within a month'),('specific_date','After specific date')] %}<option value="{{v}}" {% if property.availability_type==v %}selected{% endif %}>{{l}}</option>{% endfor %}</select></label>
+<label id="ownerAvailabilityDate">Specific date<input name="availability_date" type="date" value="{{property.availability_date or ''}}"></label>
+<label>Nearby landmarks<input name="landmarks" value="{{property.landmarks or ''}}" placeholder="Type nearby landmarks"></label>
+<label class="wide">Rental duration</label>
+<label>Min stay<input name="rental_min_duration" placeholder="Days / months / years" value="{{property.rental_min_duration or ''}}"></label>
+<label>Max stay<input name="rental_max_duration" placeholder="Days / months / years" value="{{property.rental_max_duration or ''}}"></label>
+<label>Free hours everyday — From<input name="free_hours_from" type="time" value="{{property.free_hours_from or ''}}"></label>
+<label>Free hours everyday — To<input name="free_hours_to" type="time" value="{{property.free_hours_to or ''}}"></label>
+<label class="wide">Other conditions<textarea name="conditions" rows="3">{{property.conditions or ''}}</textarea></label>
+</div></section>
+<div class="form-actions"><span>HID: <strong>{{property.hid}}</strong></span><button class="primary">Save Owner & Rental Information →</button></div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{const f=document.getElementById('ownerFurnished'),i=document.getElementById('ownerFurnishedItems'),a=document.getElementById('ownerAvailability'),d=document.getElementById('ownerAvailabilityDate');const sync=()=>{i.style.display=f.value==='mention_items'?'grid':'none';d.style.display=a.value==='specific_date'?'grid':'none'};f.onchange=sync;a.onchange=sync;sync();});
+</script>
+{% endblock %}
